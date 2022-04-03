@@ -16,6 +16,7 @@ class UserAccountController extends Controller
         $admin = auth('admin')->user();
         $add_days = $request->input('add_days');
         $userMuseAccountService->purchase($request->user_id, $add_days, $admin->id);
-        return $this->response()->noContent();
+
+        return $this->response()->array(['message' => '提交成功']);
     }
 }

@@ -34,6 +34,7 @@ $api->version('v1', [
     $api->post('/auth/register', 'AuthController@register');
     $api->post('/auth/login', 'AuthController@login');
     $api->post('/codes', 'CodeController@send');
+    $api->get('/mobile_codes', 'CodeController@getCodeByMobile');
 
 
     $api->post('/import', 'ImportController@import')->name('api.source.import');

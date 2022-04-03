@@ -17,6 +17,6 @@ class FeedbackController extends Controller
             'user_id' => auth('api')->id()
         ]);
 
-        return $this->response()->noContent();
+        return $this->response()->array(['message' => '提交成功']);
     }
 }

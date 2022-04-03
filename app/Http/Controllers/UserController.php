@@ -11,6 +11,7 @@ class UserController extends Controller
 {
     public function  info(UserTransformer $userTransformer)
     {
+
         $info = auth('api')->user();
         $userTransformer->setDefaultIncludes(['user_account']);
         return $this->response()->item($info, $userTransformer);
@@ -31,6 +32,7 @@ class UserController extends Controller
         $codeService->checkCode($request->code);
 
         $user->update(['password' => bcrypt($request->password)]);
-        return $this->response->noContent();
+
+        return $this->response()->array(['message' => '提交成功']);
     }
 }

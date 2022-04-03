@@ -16,6 +16,6 @@ class UserCollectController extends Controller
             'resource_id'   => $request->resource_id,
             'collection_id' => $request->collection_id
         ]);
-        return $this->response()->noContent();
+        return $this->response()->array(['message' => '提交成功']);
     }
 }

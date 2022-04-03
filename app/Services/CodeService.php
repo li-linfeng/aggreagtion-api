@@ -60,7 +60,7 @@ class CodeService
             $sms->status = 4;
             $sms->error_message = $e->getMessage();
             $sms->save();
-            abort(500, '系统错误,请稍后重试');
+            abort(499, '系统错误,请稍后重试');
         }
         return;
     }
