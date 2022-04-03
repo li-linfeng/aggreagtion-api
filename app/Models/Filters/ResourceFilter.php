@@ -28,7 +28,7 @@ trait ResourceFilter
 
     public function filterCategoryId($id = '')
     {
-        if (!$id) {
+        if (is_null($id)) {
             return;
         }
         return $this->builder->where('category_id', $id);

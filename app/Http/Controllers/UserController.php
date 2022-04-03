@@ -12,7 +12,7 @@ class UserController extends Controller
     public function  info(UserTransformer $userTransformer)
     {
         $info = auth('api')->user();
-        $userTransformer->setDefaultIncludes(['friends', 'user_account']);
+        $userTransformer->setDefaultIncludes(['user_account']);
         return $this->response()->item($info, $userTransformer);
     }
 

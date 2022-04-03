@@ -15,6 +15,7 @@ class UserAccountTransformer extends BaseTransformer
             'id'            => $account->id,
             'end_time'      => $account->end_time,
             'available_days' => $available_days > 0 ? $available_days : 0,
+            'invite_days'   => $account->inviteLogs->sum('add_time'),
         ];
     }
 }

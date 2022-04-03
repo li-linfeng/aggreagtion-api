@@ -21,6 +21,7 @@ class CreateResourcesTable extends Migration
             $table->text('description')->nullable()->comment('描述');
             $table->integer('category_id')->default(0)->comment('所属分类');
             $table->tinyInteger('is_show')->default(1)->comment('是否展示');
+            $table->integer('user_id')->default(0)->comment('所属用户id');
         });
     }
 

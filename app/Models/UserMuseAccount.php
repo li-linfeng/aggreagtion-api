@@ -15,20 +15,25 @@ class UserMuseAccount extends Model
 
     public function  user()
     {
-        return $this->belongsTo(User::class,  'user_id','id');
+        return $this->belongsTo(User::class,  'user_id', 'id');
     }
 
 
     public function  addLogs()
     {
-        return $this->hasMany(UserMuseAccountLog::class,  'id','account_id');
+        return $this->hasMany(UserMuseAccountLog::class,  'id', 'account_id');
     }
 
+
+    public function inviteLogs()
+    {
+        return $this->hasMany(UserMuseAccountLog::class,  'id', 'account_id')->where('type', 'invite');
+    }
 
     public function getIsExpiredAttribute()
     {
         $now = Carbon::now()->toDateTimeString();
-        if($now >= $this->end_time || !$this->end_time){ //如果已过期，或者刚初始化则都认为是过期
+        if ($now >= $this->end_time || !$this->end_time) { //如果已过期，或者刚初始化则都认为是过期
             return true;
         }
         return false;

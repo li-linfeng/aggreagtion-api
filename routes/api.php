@@ -52,19 +52,25 @@ $api->version('v1', [
         $api->post('/reset_password', 'UserController@resetPassword')->name('api.user.reset_password');
         $api->get('/info', 'UserController@info')->name('api.user.info');
 
-        $api->post('/shares', 'ShareController@store')->name('api.shares.store');
-        $api->patch('/share_code', 'UserController@bindShareCode')->name('api.user.share_code');
+
+        $api->post('/feedbacks', 'FeedbackController@store')->name('api.feedbacks.store');
+
+        //收藏夹
+        $api->post('/collections', 'CollectionController@store')->name('api.collection.store');
+        $api->get('/collection_list', 'CollectionController@list')->name('api.collection.list');
+
+        $api->post('/user_collect', 'UserCollectController@store')->name('api.user_collect.store');
+
+        //源市场分类
+        $api->get('/categories', 'CategoryController@index')->name('api.categories.index');
+        $api->get('/category_list', 'CategoryController@list')->name('api.categories.list');
+
+        //源列表
+        $api->get('/resources', 'ResourceController@index')->name('api.resources.index');
 
 
-        $api->post('/collects', 'UserCollectController@store')->name('api.collects.store'); //收藏
-        $api->post('/dis_collects', 'UserCollectController@disCollect')->name('api.collects.destroy'); //取消收藏
-
-        $api->post('/play', 'UserPlayRecordController@store')->name('api.user_play_record.store'); //播放资源
-
-        $api->get('/index', 'IndexController@index')->name('api.index.index'); //首页
-
-
-        $api->get('/channels', 'ChannelController@index')->name('api.channels.index'); //频道列表
-        $api->get('/channels/{channel}', 'ChannelController@detail')->name('api.channels.detail'); //频道详情
+        //创建个人源
+        $api->post('/user/resources', 'ResourceController@store')->name('api.user.resources.store');
+        $api->get('/user/collections', 'CollectionController@userCollections')->name('api.user.collections.list');
     });
 });
