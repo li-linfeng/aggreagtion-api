@@ -73,5 +73,22 @@ $api->version('v1', [
         //创建个人源
         $api->post('/user/resources', 'ResourceController@store')->name('api.user.resources.store');
         $api->get('/user/collections', 'CollectionController@userCollections')->name('api.user.collections.list');
+
+
+        //今日更新文章
+        $api->get('/new_articles', 'ArticleController@newArticles')->name('api.articles.new');
+        $api->get('/unread_articles', 'ArticleController@unReadArticles')->name('api.articles.unread');
+        $api->get('/collect_articles', 'ArticleController@collectArticles')->name('api.articles.collect');
+        $api->get('/history_articles', 'ArticleController@history')->name('api.articles.history');
+
+        //收藏文章
+        $api->post('/collect/article', 'UserCollectArticleController@store')->name('api.collect.store');
+        $api->delete('/collect/article', 'UserCollectArticleController@destroy')->name('api.collect.delete');
+
+        $api->get('/articles', 'ArticleController@getArticleByResource')->name('api.articles.resource');
+        $api->get('/articles/{article}', 'ArticleController@show')->name('api.articles.show');
+
+        //浏览
+        $api->post('/user_browses', 'UserBrowseController@store')->name('api.user_browse.store');
     });
 });

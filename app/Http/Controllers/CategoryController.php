@@ -12,7 +12,7 @@ class CategoryController extends Controller
     //公共分类
     public function index(Request $request, CategoryTransformer $categoryTransformer)
     {
-        $items = Category::where('user_id', 0)->paginate();
+        $items = Category::where('user_id', 0)->paginate(request('per_page', 10));
         return $this->response()->paginator($items, $categoryTransformer);
     }
 

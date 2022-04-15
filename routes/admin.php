@@ -28,6 +28,7 @@ $api->version('v1', [
      * 无需登录的接口
      */
     $api->post('/login', 'AdminUserController@login');
+    $api->post('/resource_import', 'ResourceController@import')->name('admin.resource.import');
 
 
     /**

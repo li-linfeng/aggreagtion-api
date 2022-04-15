@@ -11,13 +11,23 @@ class ResourceTransformer extends BaseTransformer
 
     public function transform(Resource $resource)
     {
-        return [
-            'id'          => $resource->id,
-            'name'        => $resource->name,
-            'is_show'     => $resource->is_show,
-            'link'        => $resource->link,
-            'description' => $resource->description
-        ];
+        $route = request()->route()->getName();
+        switch ($route) {
+            case "api.user.collections.list":
+                return [
+                    'id'             => $resource->id,
+                    'name'           => $resource->name,
+                    'un_visit_count' => $resource->un_visit_count,
+                ];
+            default:
+                return [
+                    'id'          => $resource->id,
+                    'name'        => $resource->name,
+                    'is_show'     => $resource->is_show,
+                    'link'        => $resource->link,
+                    'description' => $resource->description
+                ];
+        }
     }
 
 

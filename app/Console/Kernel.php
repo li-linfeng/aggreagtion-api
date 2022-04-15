@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\FindUploadResources;
+use App\Console\Commands\UpdateArticles;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,6 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        UpdateArticles::class,
         FindUploadResources::class,
     ];
 
@@ -25,7 +27,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $date_format = date('Ymd');
+        $schedule->command('command:update_articles')->daily();
+        $schedule->command('resource:findNewResource')->everyMinute();
+        $schedule->call(function () {
+            app('log')->info('执行任务');
+        })->hourly();
     }
 
     /**

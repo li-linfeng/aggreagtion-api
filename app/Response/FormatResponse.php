@@ -47,6 +47,7 @@ class FormatResponse
                     $tempContent['pageSize'] = $event->content['meta']['pagination']['per_page'];
                     $tempContent['total'] = $event->content['meta']['pagination']['total'];
                     $tempContent['currentPage'] = $event->content['meta']['pagination']['current_page'];
+                    $tempContent['total_pages'] = $event->content['meta']['pagination']['total_pages'];
                 }
 
                 $event->content = array_merge($addData, $tempContent);

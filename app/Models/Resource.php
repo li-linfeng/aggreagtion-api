@@ -19,4 +19,9 @@ class Resource extends Model
     {
         return $this->belongsTo(Category::class, 'id', 'category_id');
     }
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class, 'resource_id', 'id');
+    }
 }

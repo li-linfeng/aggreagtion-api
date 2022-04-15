@@ -5,6 +5,7 @@ namespace App\Admin\Controllers;
 use Illuminate\Http\Request;
 use App\Admin\Requests\ResourceRequest;
 use App\Admin\Transformers\ResourceTransformer;
+use App\Imports\ResourceImport;
 use App\Models\Resource;
 
 class ResourceController extends Controller
@@ -31,5 +32,12 @@ class ResourceController extends Controller
         $resource->save();
 
         return $this->response()->item($resource, new ResourceTransformer());
+    }
+
+
+    public function import(Request $request)
+    {
+        app('excel')->import(new ResourceImport(), $request->file('file'));
+        return $this->response()->array(['message' => '导入成功']);
     }
 }

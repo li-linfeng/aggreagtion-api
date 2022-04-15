@@ -32,8 +32,24 @@ class CollectionController extends Controller
     public function  userCollections(CollectionTransformer $collectionTransformer)
     {
         $items = Collection::where('user_id', auth('api')->id())
-            ->with(['resources'])
-            ->get();
+            // ->withCount(['resources.articles.visit', 'resources.articles'])
+            ->with([
+                'resources.articles' => function ($query) {
+                    $query->withCount('visit');
+                },
+                'resources' => function ($query) {
+                    $query->withCount('articles');
+                }
+            ])
+            ->get()
+            ->map(function ($item) {
+                $item->resources->map(function ($resource) {
+                    $total_visited = $resource->articles->sum('visit_count');
+                    $resource->un_visit_count = $resource->articles_count - $total_visited;
+                    return $resource;
+                });
+                return $item;
+            });
 
         return $this->response()->collection($items, $collectionTransformer, ['key' => 'flatten'], function ($resource, $fractal) {
             $fractal->parseIncludes(['resources']);
