@@ -17,13 +17,13 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
-        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
-            'SocialiteProviders\Weixin\WeixinExtendSocialite@handle',
-            'SocialiteProviders\Apple\AppleExtendSocialite@handle',
-        ],
+        // Registered::class => [
+        //     SendEmailVerificationNotification::class,
+        // ],
+        // \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+        //     'SocialiteProviders\Weixin\WeixinExtendSocialite@handle',
+        //     'SocialiteProviders\Apple\AppleExtendSocialite@handle',
+        // ],
         'Illuminate\Database\Events\QueryExecuted'            => [
             'App\Listeners\QueryListener',
         ],

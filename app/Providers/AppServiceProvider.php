@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
         //表单验证错误抛出 422
         \API::error(function (\Dingo\Api\Exception\ValidationHttpException $exception) {
             $errors = $exception->getErrors();
-            return response()->json(['message' => $errors->first(), 'status_code' => 422], 200);
+            return response()->json(['message' => $errors->first(), 'status_code' => 422], 422);
         });
     }
 

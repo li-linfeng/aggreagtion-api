@@ -7,6 +7,8 @@ use App\Models\Article;
 use App\Models\UserBrowse;
 use App\Models\UserCollect;
 use App\Models\UserCollectArticle;
+use App\Models\UserMuseAccount;
+use App\Services\ArticleService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -16,43 +18,29 @@ class ArticleController extends Controller
 {
 
     //今日更新
-    public function newArticles(ArticleTransformer $articleTransformer)
+    public function newArticles(ArticleService $articleService, ArticleTransformer $articleTransformer)
     {
-
-        $resource_ids = UserCollect::where('user_id', auth('api')->id())->pluck('resource_id')->toArray();
-        $articles = Article::where('publish_time', '>', Carbon::today()->toDateTimeString())
-            ->with(['visit'])
-            ->whereIn('resource_id', $resource_ids)
-            // ->whereDoesntHave('visit')
-            ->paginate(request('per_page', 10));
+        $articles = $articleService->newArticles();
         return $this->response()->paginator($articles, $articleTransformer,  [], function ($resource, $fractal) {
             $fractal->parseIncludes(['is_browsed']);
         });
     }
 
 
-    //今日更新
-    public function unReadArticles(ArticleTransformer $articleTransformer)
+    //所有未读文章
+    public function unReadArticles(ArticleService $articleService, ArticleTransformer $articleTransformer)
     {
 
-        $resource_ids = UserCollect::where('user_id', auth('api')->id())->pluck('resource_id')->toArray();
-        $articles = Article::whereIn('resource_id', $resource_ids)
-            ->with(['visit'])
-            ->whereDoesntHave('visit')
-            ->paginate(request('per_page', 10));
+        $articles = $articleService->unReadArticles();
         return $this->response()->paginator($articles, $articleTransformer,  [], function ($resource, $fractal) {
             $fractal->parseIncludes(['is_browsed']);
         });
     }
 
     //星标文章
-    public function collectArticles(ArticleTransformer $articleTransformer)
+    public function collectArticles(ArticleService $articleService, ArticleTransformer $articleTransformer)
     {
-
-        $resource_ids = UserCollectArticle::where('user_id', auth('api')->id())->pluck('article_id')->toArray();
-        $articles = Article::whereIn('id', $resource_ids)
-            ->with(['visit', 'collect'])
-            ->paginate(request('per_page', 10));
+        $articles = $articleService->collectArticles();
         return $this->response()->paginator($articles, $articleTransformer,  [], function ($resource, $fractal) {
             $fractal->parseIncludes(['is_browsed', 'is_collected']);
         });
@@ -60,23 +48,12 @@ class ArticleController extends Controller
 
 
     //正在阅读
-    public function history(ArticleTransformer $articleTransformer)
+    public function history(ArticleService $articleService, ArticleTransformer $articleTransformer)
     {
-        $ids = UserBrowse::where('user_id', auth('api')->id())->orderBy('created_at', 'desc')->take(10)->pluck('article_id')->toArray();
-        $articles =  Article::when($ids, function ($q) use ($ids) {
-            $id_str = implode(",", $ids);
-            $q->whereIn('id',  $ids)->orderByRaw(\DB::raw("FIELD(id, $id_str)"));
-        }, function ($q) {
-            $q->where('id',  0);
-        })
-            ->with(['visit', 'collect'])
-            ->get();
-
+        $articles = $articleService->history();
         return $this->response()->collection($articles, $articleTransformer, ['key' => 'flatten'], function ($resource, $fractal) {
             $fractal->parseIncludes(['is_browsed', 'is_collected']);
-        })->setMeta([
-            'total' => count($ids),
-        ]);
+        });
     }
 
 
@@ -95,6 +72,12 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
+        //查看账户是否到期
+
+        $account = UserMuseAccount::where('user_id', auth('api')->id())->first();
+        if ($account && $account->expire_time < Carbon::now()) {
+            return abort(403, '账户已到期');
+        }
         //获取发送消息的签名
         $client   = new Client([
             'verify' => false
@@ -113,6 +96,21 @@ class ArticleController extends Controller
             'detail'       => $content,
             'is_collected' => $article->collect ? true : false,
             'is_browsed'   => $article->visit ? true : false,
+        ]);
+    }
+
+
+    public function getUserArticleData(ArticleService $articleService)
+    {
+        $new_article_count = $articleService->newArticles(true);
+        $un_read_count = $articleService->unReadArticles(true);
+        $collect_count = $articleService->collectArticles(true);
+        $reading_count = $articleService->history(true);
+        return $this->response()->array([
+            'new_article_count' => $new_article_count,
+            'un_read_count'     => $un_read_count,
+            'collect_count'     => $collect_count,
+            'reading_count'     => $reading_count,
         ]);
     }
 }

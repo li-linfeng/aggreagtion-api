@@ -24,4 +24,10 @@ class Resource extends Model
     {
         return $this->hasMany(Article::class, 'resource_id', 'id');
     }
+
+    //被用户收藏
+    public function userCollect()
+    {
+        return $this->belongsTo(UserCollect::class, 'id', 'resource_id')->where('user_id', auth('api')->id());
+    }
 }

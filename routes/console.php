@@ -39,7 +39,7 @@ Artisan::command('addArticles', function () {
             $json = json_encode($xml);
             $data = json_decode($json, true);
             $items = $data['channel']['item'] ?? [];
-
+            dd($data);
             foreach ($items as $item) {
                 Article::firstOrCreate([
                     'title'       => $item['title'] ?? "",
@@ -53,4 +53,35 @@ Artisan::command('addArticles', function () {
             $resource->update(['is_show' => 0]);
         }
     });
+});
+
+
+
+Artisan::command('test-job', function () {
+    dispatch(new \App\Jobs\TestJob());
+});
+
+Artisan::command('rss', function () {
+    //获取发送消息的签名
+    $client   = new Client([
+        'timeout' => 2.0,
+        'verify' => false
+    ]);
+    $link = "https://yinwang1.wordpress.com/feed/";
+    try {
+        $response = $client->get($link);
+        //判断header里的content-type 
+        $content_type = $response->getHeader('Content-Type');
+
+        if (!preg_match("/rss/", $content_type[0]) || !preg_match("/xml/", $content_type[0])) {
+            return;
+        }
+        //解析xml并更新文章
+        $xml = simplexml_load_string($response->getBody(), 'SimpleXMLElement', LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $data = json_decode($json, true);
+        $items = $data['channel']['item'] ?? [];
+        dd($data);
+    } catch (GuzzleException $exception) {
+    }
 });

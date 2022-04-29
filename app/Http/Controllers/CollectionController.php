@@ -44,7 +44,9 @@ class CollectionController extends Controller
             ->get()
             ->map(function ($item) {
                 $item->resources->map(function ($resource) {
-                    $total_visited = $resource->articles->sum('visit_count');
+                    $total_visited = $resource->articles->filter(function ($item) {
+                        return $item->visit_count > 0;
+                    })->count();
                     $resource->un_visit_count = $resource->articles_count - $total_visited;
                     return $resource;
                 });

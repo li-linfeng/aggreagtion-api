@@ -25,6 +25,7 @@ $api->version('v1', [
 
 
     $api->get('/ping', function () {
+        // abort(404, '接口不存在');
         return response()->json(['message' => 'ping']);
     });
 
@@ -87,6 +88,9 @@ $api->version('v1', [
 
         $api->get('/articles', 'ArticleController@getArticleByResource')->name('api.articles.resource');
         $api->get('/articles/{article}', 'ArticleController@show')->name('api.articles.show');
+
+        $api->get('/article_data', 'ArticleController@getUserArticleData')->name('api.user.article_data');
+
 
         //浏览
         $api->post('/user_browses', 'UserBrowseController@store')->name('api.user_browse.store');

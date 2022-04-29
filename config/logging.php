@@ -107,6 +107,7 @@ return [
             'path'   => storage_path('logs/sql/laravel.log'),
             'level'  => 'debug',
             'days'   => 7,
+            'permission' => 0777,
         ],
     ],
 

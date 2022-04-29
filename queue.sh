@@ -1,0 +1,1 @@
+ php /home/ubuntu/www/aggreagtion-api/artisan  queue:work  --tries=3  --max-time=3600 

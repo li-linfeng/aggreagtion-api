@@ -29,10 +29,10 @@ class Kernel extends ConsoleKernel
     {
         $date_format = date('Ymd');
         $schedule->command('command:update_articles')->daily();
-        $schedule->command('resource:findNewResource')->everyMinute();
+        // $schedule->command('resource:findNewResource')->everyMinute();
         $schedule->call(function () {
-            app('log')->info('执行任务');
-        })->hourly();
+            app('log')->info('执行计划任务');
+        })->daily();
     }
 
     /**
